@@ -22,6 +22,7 @@ import javax.swing.*;
 
 public class GamePanel extends JPanel implements  KeyListener{
 	
+	
 	private static Watch watch=new Watch();
 	private static HashMap<String, Long> record=new HashMap<String, Long>(); 
 	private boolean[] isFree = new boolean[36];
