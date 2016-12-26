@@ -18,9 +18,10 @@ import javax.swing.JTextField;
 
 public class MyFrame extends JFrame implements ActionListener{
 	private String user_name;
-	private JMenuItem jMenuItem_new_game=new JMenuItem("New Game");
+	private JMenuItem jMenuItem_normal_new_game=new JMenuItem("New Game");
 	private JMenuItem jMenuItem_record=new JMenuItem("Record");
-	private JMenuItem jMenuItem_diy_game=new JMenuItem("DIY Game");
+	private JMenuItem jMenuItem_diy_game=new JMenuItem("New DIY Game");
+	private JMenuItem jMenuItem_start_diy_game=new JMenuItem("Start DIY Game");
 	private JMenuItem jMenuItem_skip=new JMenuItem("skip");
 	private JMenuItem jMenuItem_undo=new JMenuItem("undo");
 	private JMenuItem jMenuItem_reset=new JMenuItem("reset");
@@ -29,18 +30,24 @@ public class MyFrame extends JFrame implements ActionListener{
 		super();
 		JMenuBar jMenuBar=new JMenuBar();
 		JMenu JMenu_start=new JMenu("menu");
+		JMenu JMenu_normal=new JMenu("normal");
+		JMenu JMenu_diy=new JMenu("Diy");
 		JMenu JMenu_operation=new JMenu("operation");
 		/********************jMenuItem添加事件*****************/
-		jMenuItem_new_game.addActionListener(this);
+		jMenuItem_normal_new_game.addActionListener(this);
 		jMenuItem_record.addActionListener(this);
 		jMenuItem_skip.addActionListener(this);
 		jMenuItem_undo.addActionListener(this);
 		jMenuItem_reset.addActionListener(this);
 		jMenuItem_diy_game.addActionListener(this);
+		jMenuItem_start_diy_game.addActionListener(this);
 		/********************jMenu添加jMenuItem*****************/
-		JMenu_start.add(jMenuItem_new_game);
-		JMenu_start.add(jMenuItem_record);
-		JMenu_start.add(jMenuItem_diy_game);
+		JMenu_start.add(JMenu_normal);
+		JMenu_start.add(JMenu_diy);
+		JMenu_normal.add(jMenuItem_normal_new_game);
+		JMenu_normal.add(jMenuItem_record);
+		JMenu_diy.add(jMenuItem_diy_game);
+		JMenu_diy.add(jMenuItem_start_diy_game);
 		JMenu_operation.add(jMenuItem_skip);
 		JMenu_operation.add(jMenuItem_reset);
 		JMenu_operation.add(jMenuItem_undo);
@@ -61,8 +68,8 @@ public class MyFrame extends JFrame implements ActionListener{
 	public void actionPerformed(ActionEvent e) {
 		// TODO Auto-generated method stub
 		Object src=e.getSource();
-		if(src==jMenuItem_new_game){
-			this.loginPanel.gamePanel.startNewGame();
+		if(src==jMenuItem_normal_new_game){
+			this.loginPanel.gamePanel.start();
 		}
 		if(src==jMenuItem_record){
 			this.loginPanel.gamePanel.callRecord(this);
@@ -78,6 +85,9 @@ public class MyFrame extends JFrame implements ActionListener{
 		}
 		if(src==jMenuItem_diy_game){
 			this.loginPanel.changeToDiy();
+		}
+		if(src==jMenuItem_start_diy_game){
+			this.loginPanel.gamePanel.startDiyGame();
 		}
 	}
 }
