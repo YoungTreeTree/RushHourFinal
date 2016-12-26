@@ -18,8 +18,9 @@ import javax.swing.JTextField;
 
 public class MyFrame extends JFrame implements ActionListener{
 	private String user_name;
-	private JMenuItem jMenuItem_new_game=new JMenuItem("new game");
+	private JMenuItem jMenuItem_new_game=new JMenuItem("New Game");
 	private JMenuItem jMenuItem_record=new JMenuItem("Record");
+	private JMenuItem jMenuItem_diy_game=new JMenuItem("DIY Game");
 	private JMenuItem jMenuItem_skip=new JMenuItem("skip");
 	private JMenuItem jMenuItem_undo=new JMenuItem("undo");
 	private JMenuItem jMenuItem_reset=new JMenuItem("reset");
@@ -35,9 +36,11 @@ public class MyFrame extends JFrame implements ActionListener{
 		jMenuItem_skip.addActionListener(this);
 		jMenuItem_undo.addActionListener(this);
 		jMenuItem_reset.addActionListener(this);
+		jMenuItem_diy_game.addActionListener(this);
 		/********************jMenu添加jMenuItem*****************/
 		JMenu_start.add(jMenuItem_new_game);
 		JMenu_start.add(jMenuItem_record);
+		JMenu_start.add(jMenuItem_diy_game);
 		JMenu_operation.add(jMenuItem_skip);
 		JMenu_operation.add(jMenuItem_reset);
 		JMenu_operation.add(jMenuItem_undo);
@@ -72,6 +75,9 @@ public class MyFrame extends JFrame implements ActionListener{
 		}
 		if(src==jMenuItem_undo){
 			this.loginPanel.gamePanel.undo();
+		}
+		if(src==jMenuItem_diy_game){
+			this.loginPanel.changeToDiy();
 		}
 	}
 }

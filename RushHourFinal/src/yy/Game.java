@@ -5,7 +5,7 @@ import javax.swing.text.Position;
 
 
 public class Game {
-	ArrayList<Car> carList = new ArrayList<Car>();
+	public ArrayList<Car> carList = new ArrayList<Car>();
 
 	public ArrayList<Car> getCarList() {
 		return carList;

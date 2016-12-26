@@ -14,6 +14,7 @@ public class LoginPanel extends JPanel implements ActionListener{
 	private String user_name;
 	private String password;
 	public  GamePanel gamePanel=new GamePanel();
+	public  DiyGame diyGame=new DiyGame();
 	int reCode=0;
 	JLabel jLabel_name=new JLabel("用户名 : ");
 	JLabel jLabel_password=new JLabel("密码 : ");
@@ -39,6 +40,11 @@ public class LoginPanel extends JPanel implements ActionListener{
 		this.add(jTextFieldTextField_name,2);
 		this.add(jPasswordField_password,3);
 		this.add(jButton_submit,4);
+	}
+	public void changeToDiy(){
+		this.removeAll();
+		this.add(diyGame);
+		diyGame.setBounds(0, 0, 1000, 800);
 	}
 	@Override
 	public void actionPerformed(ActionEvent e) {
