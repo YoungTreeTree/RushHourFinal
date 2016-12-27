@@ -38,8 +38,13 @@ public class DiyGame extends Panel implements MouseListener,MouseMotionListener,
 		for(int i=0;i<36;i++){
 			isFree[i]=true;
 		}
-		isFree[12]=false;
-		isFree[13]=false;
+		Car car=new Car();
+		int blocks[]=new int[]{12,13,36};
+		car.setBlocks(blocks);
+		car.setVertical(false);
+		car.setVisible(true);
+		diyGames.getCarList().add(car);
+		setNotFree(blocks);
 		/*测试用
 		int num[]=new int []{12, 13, 36};
 		Car car =new Car();
@@ -292,6 +297,18 @@ public class DiyGame extends Panel implements MouseListener,MouseMotionListener,
 		Object src=e.getSource();
 		if(src==jButton_reset){
 			diyGames.getCarList().clear();
+			for(int i=0;i<36;i++){
+				isFree[i]=true;
+			}
+			Car car=new Car();
+			int blocks[]=new int[]{12,13,36};
+			car.setBlocks(blocks);
+			car.setVertical(false);
+			car.setVisible(true);
+			diyGames.getCarList().add(car);
+			setNotFree(blocks);
+			repaint();
+			
 		}
 	}
 }

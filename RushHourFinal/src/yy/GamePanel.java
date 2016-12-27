@@ -356,6 +356,9 @@ public class GamePanel extends JPanel implements KeyListener, MouseListener, Mou
 	/************* menu上面的操作 监听器设置在MyFrame上面，留给MyFramed调用 *****************/
 	public void startDiyGame() {
 		// TODO Auto-generated method stub
+		addKeyListener(this);
+		this.requestFocus();
+		new Timer().schedule(new MyTimerTask(), 1000);
 		initialize("DiyCarPosition");
 	}
 

@@ -46,6 +46,12 @@ public class LoginPanel extends JPanel implements ActionListener{
 		this.add(diyGame);
 		diyGame.setBounds(0, 0, 1000, 800);
 	}
+	public void changeToGamePanel(){
+		this.removeAll();
+		this.add(gamePanel);
+		gamePanel.setBounds(0, 0, 1000, 800);
+		gamePanel.start();
+	}
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		// TODO Auto-generated method stub
@@ -63,5 +69,6 @@ public class LoginPanel extends JPanel implements ActionListener{
 				//	}
 		}
 	}
+	
 }
 

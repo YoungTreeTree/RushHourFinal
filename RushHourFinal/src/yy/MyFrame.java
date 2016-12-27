@@ -63,12 +63,24 @@ public class MyFrame extends JFrame implements ActionListener{
 		this.add(loginPanel);
 		
 	}
+	public void makeOperationOff(){
+		jMenuItem_skip.setEnabled(false);
+		jMenuItem_undo.setEnabled(false);
+		jMenuItem_reset.setEnabled(false);
+	}
+	public void makeOperationOn(){
+		jMenuItem_skip.setEnabled(true);
+		jMenuItem_undo.setEnabled(true);
+		jMenuItem_reset.setEnabled(true);
+	}
 	/********************监听menu的事件调用panel里面的函数*****************/
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		// TODO Auto-generated method stub
 		Object src=e.getSource();
 		if(src==jMenuItem_normal_new_game){
+			this.makeOperationOn();
+			this.loginPanel.changeToGamePanel();
 			this.loginPanel.gamePanel.start();
 		}
 		if(src==jMenuItem_record){
@@ -84,9 +96,12 @@ public class MyFrame extends JFrame implements ActionListener{
 			this.loginPanel.gamePanel.undo();
 		}
 		if(src==jMenuItem_diy_game){
+			this.makeOperationOff();
 			this.loginPanel.changeToDiy();
 		}
 		if(src==jMenuItem_start_diy_game){
+			this.makeOperationOn();
+			this.loginPanel.changeToGamePanel();
 			this.loginPanel.gamePanel.startDiyGame();
 		}
 	}
