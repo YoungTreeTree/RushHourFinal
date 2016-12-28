@@ -24,7 +24,7 @@ import javax.swing.*;
 
 public class GamePanel extends JPanel implements KeyListener, MouseListener, MouseMotionListener {
 	private static Watch watch = new Watch();
-	private static HashMap<String, Long> record = new HashMap<String, Long>();
+	private static HashMap<String, Integer> record = new HashMap<String, Integer>();
 	private boolean[] isFree = new boolean[36];
 	private int currentCar = 1;// 1,2,3,4,5,6
 	private int currentGame = 0;// firstly 0
@@ -40,12 +40,19 @@ public class GamePanel extends JPanel implements KeyListener, MouseListener, Mou
 	// public Point endPoint;
 	public boolean isDragging = false;
 	public int m = 100;// 方块大小
-
+	/****************小车的图片**************/
+	Image[] image1 =new Image[6];
+	Image[] image2 =new Image[6];
+	/*   是不是diy 的游戏  */
+	boolean ifDiy;
+	Image background=Toolkit.getDefaultToolkit().getImage("src/background.jpg");
+	private JFrame myFrame;
 	public void printCarList(ArrayList<Car> carList) {
+		/*
 		for (int i = 0; i < 6; i++) {
 			System.out.println(carList.get(i).getBlocks()[0] + " " + carList.get(i).getBlocks()[1] + " "
 					+ carList.get(i).getBlocks()[2]);
-		}
+		}*/
 	}
 
 	public void initialize(String path) {
@@ -56,12 +63,27 @@ public class GamePanel extends JPanel implements KeyListener, MouseListener, Mou
 		 * 这里需要一个函数把txt里面的记录放进来********* 新写一个类 参数是文件的路径 String path和
 		 * HashMap<String, Long> record
 		 */
-		for (int i = 0; i < 2; i++) {
-			char ch = (char) (i + '0');
-			record.put(ch + "", (long) 999999);
-			// System.out.println(ch+""+" "+record.get(ch+""));
+		if(ifDiy==false){
+			try {
+				record=new FileReader().fromFile("src/record.txt");
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
-
+		for(int i=0;i<6;i++){
+			image1[i]=Toolkit.getDefaultToolkit().getImage("src/car1"+i+".jpg");
+		}
+		for(int i=0;i<6;i++){
+			image2[i]=Toolkit.getDefaultToolkit().getImage("src/car2"+i+".jpg");
+		}
+		for(int i=0;i<6;i++){
+			Icon icon=new ImageIcon("src/car1"+i+".jpg");
+		}
+		for(int i=0;i<6;i++){
+			Icon icon=new ImageIcon("src/car2"+i+".jpg");
+		}
+		Icon icon=new ImageIcon("src/background.jpg");
 		watch.start();
 		currentGame = 0;
 		totalSteps = 0;
@@ -149,6 +171,8 @@ public class GamePanel extends JPanel implements KeyListener, MouseListener, Mou
 	// lines
 	public void paint(Graphics g) {
 		super.paint(g);
+		g.drawImage(background, 200, 10, 600, 600, null);
+		/*
 		for (int i = 0; i < 7; i++) {
 			int x1 = 200;
 			int y1 = 10 + 100 * i;
@@ -159,7 +183,7 @@ public class GamePanel extends JPanel implements KeyListener, MouseListener, Mou
 			int y1 = 10;
 			g.drawLine(x1, y1, x1, y1 + 600);
 		}
-
+*/
 		g.drawString("steps:" + totalSteps, 100, 100);
 		drawTime(g);
 		drawCars(allGames.get(currentGame).getCarList(), g);
@@ -171,8 +195,8 @@ public class GamePanel extends JPanel implements KeyListener, MouseListener, Mou
 		// System.out.println("drawing cars:");
 		// printCarList(cars);
 		for (int i = 0; i < 6; i++) {
-			Icon icon = new ImageIcon("src/abc.png");// ?why
-			Image image = Toolkit.getDefaultToolkit().getImage("src/abc.png");
+		//	Icon icon = new ImageIcon("src/abc.png");// ?why
+		//	Image image = Toolkit.getDefaultToolkit().getImage("src/abc.png");
 			boolean vertical = cars.get(i).isVertical();
 			boolean visible = cars.get(i).isVisible();
 			int[] blocks = cars.get(i).getBlocks();
@@ -192,57 +216,89 @@ public class GamePanel extends JPanel implements KeyListener, MouseListener, Mou
 				int neighbours=0;
 				int x_part=(int) (draggingPoint.getX()-startPoint.getX());
 				int y_part=(int) (draggingPoint.getY()-startPoint.getY());//正或负
-				System.out.println("x_part "+x_part);
-				System.out.println("y_part"+y_part);
 				if(vertical){
 					if(y_part>0){//down
 						neighbours=freeNeighbours(blocks[num-1], 's');
-						System.out.println("sssssssss neighbours "+neighbours);
 						if(y_part<=neighbours*m){//可以拖动
-							g.drawImage(image, (blocks[0] % 6) * m + x0, (blocks[0] / 6) * m + y0+y_part, m, m * num, null, null);
+							if(allGames.get(currentGame).getCarList().get(i).isVertical()){
+							g.drawImage(image2[i], (blocks[0] % 6) * m + x0, (blocks[0] / 6) * m + y0+y_part, m, m * num, null, null);
+							}
+							else{
+							g.drawImage(image1[i], (blocks[0] % 6) * m + x0, (blocks[0] / 6) * m + y0+y_part, m, m * num, null, null);
+							}
 						}
 						else{//碰到边界或其他小车，无法拖动，画出临界位置
-							System.out.println("undraggable sssss");
-							g.drawImage(image, (blocks[0] % 6) * m + x0, ((blocks[0]+6*neighbours) / 6) * m + y0, m, m * num, null, null);		
+							if(allGames.get(currentGame).getCarList().get(i).isVertical()){
+								g.drawImage(image2[i], (blocks[0] % 6) * m + x0, ((blocks[0]+6*neighbours) / 6) * m + y0, m, m * num, null, null);		
+							}
+							else{
+								g.drawImage(image1[i], (blocks[0] % 6) * m + x0, ((blocks[0]+6*neighbours) / 6) * m + y0, m, m * num, null, null);		
+							}
 						}		
 					}
 					else{//y_part<=0//up
 						neighbours=freeNeighbours(blocks[0], 'w');
-						System.out.println("wwwwwww neighbours "+neighbours);
 						if(-y_part<=neighbours*m){//可以拖动
-							System.out.println("draggable");
-							System.out.println("y_part "+y_part);
-							g.drawImage(image, (blocks[0] % 6) * m + x0, (blocks[0] / 6) * m + y0+y_part, m, m * num, null, null);
+							if(allGames.get(currentGame).getCarList().get(i).isVertical()){
+								g.drawImage(image2[i], (blocks[0] % 6) * m + x0, (blocks[0] / 6) * m + y0+y_part, m, m * num, null, null);
+							}
+							else{
+								g.drawImage(image1[i], (blocks[0] % 6) * m + x0, (blocks[0] / 6) * m + y0+y_part, m, m * num, null, null);
+							}
+							
 						}
 						else{//碰到边界或其他小车，无法拖动，画出临界位置
-							System.out.println("undraggable wwww");
-							g.drawImage(image, (blocks[0] % 6) * m + x0, ((blocks[0]-6*neighbours) / 6) * m + y0, m, m * num, null, null);		
+							if(allGames.get(currentGame).getCarList().get(i).isVertical()){
+								g.drawImage(image2[i], (blocks[0] % 6) * m + x0, ((blocks[0]-6*neighbours) / 6) * m + y0, m, m * num, null, null);		
+							}
+							else{
+								g.drawImage(image1[i], (blocks[0] % 6) * m + x0, ((blocks[0]-6*neighbours) / 6) * m + y0, m, m * num, null, null);		
+							}
 						}					
 					}				
 				}
 				else{//not vertical
 					if(x_part>0){//right
 						neighbours=freeNeighbours(blocks[num-1], 'd');
-						System.out.println("ddddddd neighbours "+neighbours);
 						if(x_part<=neighbours*m){//可以拖动
-							g.drawImage(image, (blocks[0] % 6) * m + x0+x_part, (blocks[0] / 6) * m + y0, m*num, m, null, null);
+							if(allGames.get(currentGame).getCarList().get(i).isVertical()){
+								g.drawImage(image2[i], (blocks[0] % 6) * m + x0+x_part, (blocks[0] / 6) * m + y0, m*num, m, null, null);	
+							}
+							else{
+								g.drawImage(image1[i], (blocks[0] % 6) * m + x0+x_part, (blocks[0] / 6) * m + y0, m*num, m, null, null);
+							}
+							
 						}
 						else{//碰到边界或其他小车，无法拖动，画出临界位置
-							System.out.println("undraggable dddd");
-							g.drawImage(image, ((blocks[0]+neighbours )% 6) * m + x0, (blocks[0] / 6) * m + y0, m*num, m , null, null);		
+							if(allGames.get(currentGame).getCarList().get(i).isVertical()){
+								g.drawImage(image2[i], ((blocks[0]+neighbours )% 6) * m + x0, (blocks[0] / 6) * m + y0, m*num, m , null, null);		
+							}
+							else{
+								g.drawImage(image1[i], ((blocks[0]+neighbours )% 6) * m + x0, (blocks[0] / 6) * m + y0, m*num, m , null, null);		
+							}
+							
 						}							
 					}
 					else{//x_part<=0//left
 						hostBlock=blocks[0];
 						neighbours=freeNeighbours(hostBlock, 'a');
-						System.out.println("block "+hostBlock+" has ");
-						System.out.println("aaaaaa neighbours "+neighbours);
 						if(-x_part<=neighbours*m){//可以拖动
-							g.drawImage(image, (blocks[0] % 6) * m + x0+x_part, (blocks[0] / 6) * m + y0, m*num, m, null, null);
+							if(allGames.get(currentGame).getCarList().get(i).isVertical()){
+								g.drawImage(image2[i], (blocks[0] % 6) * m + x0+x_part, (blocks[0] / 6) * m + y0, m*num, m, null, null);
+							}
+							else{
+								g.drawImage(image1[i], (blocks[0] % 6) * m + x0+x_part, (blocks[0] / 6) * m + y0, m*num, m, null, null);
+							}
+							
 						}
 						else{//碰到边界或其他小车，无法拖动，画出临界位置
-							System.out.println("undraggable aaaa");
-							g.drawImage(image, ((blocks[0]-neighbours) % 6) * m + x0, (blocks[0]/ 6) * m + y0, m*num, m , null, null);		
+							if(allGames.get(currentGame).getCarList().get(i).isVertical()){
+								g.drawImage(image2[i], ((blocks[0]-neighbours) % 6) * m + x0, (blocks[0]/ 6) * m + y0, m*num, m , null, null);
+							}
+							else{
+								g.drawImage(image1[i], ((blocks[0]-neighbours) % 6) * m + x0, (blocks[0]/ 6) * m + y0, m*num, m , null, null);
+							}
+									
 						}			
 					}			
 				}
@@ -250,9 +306,21 @@ public class GamePanel extends JPanel implements KeyListener, MouseListener, Mou
 			} else {//other cars
 				if (visible) {
 					if (vertical) {
-						g.drawImage(image, (blocks[0] % 6) * m + x0, (blocks[0] / 6) * m + y0, m, m * num, null, null);
+						if(allGames.get(currentGame).getCarList().get(i).isVertical()){
+							g.drawImage(image2[i], (blocks[0] % 6) * m + x0, (blocks[0] / 6) * m + y0, m, m * num, null, null);
+						}
+						else{
+							g.drawImage(image1[i], (blocks[0] % 6) * m + x0, (blocks[0] / 6) * m + y0, m, m * num, null, null);
+						}
+						
 					} else {
-						g.drawImage(image, (blocks[0] % 6) * m + x0, (blocks[0] / 6) * m + y0, m * num, m, null, null);
+						if(allGames.get(currentGame).getCarList().get(i).isVertical()){
+							g.drawImage(image2[i], (blocks[0] % 6) * m + x0, (blocks[0] / 6) * m + y0, m * num, m, null, null);
+						}
+						else{
+							g.drawImage(image1[i], (blocks[0] % 6) * m + x0, (blocks[0] / 6) * m + y0, m * num, m, null, null);
+						}
+						
 					}
 					for (int j = 0; j < num; j++) {
 						isFree[blocks[j]] = false;
@@ -286,7 +354,6 @@ public class GamePanel extends JPanel implements KeyListener, MouseListener, Mou
 	}
 
 	public void keyReleased(KeyEvent e) {
-		System.out.println("keyyyyyyyyy");
 		char KeyChar = e.getKeyChar();
 		// 123456
 		if (KeyChar >= '1' && KeyChar <= '6') {
@@ -317,7 +384,6 @@ public class GamePanel extends JPanel implements KeyListener, MouseListener, Mou
 
 		// wasd
 		else if (KeyChar == 'w' || KeyChar == 'a' || KeyChar == 's' || KeyChar == 'd') {
-			System.out.println("press wasd");
 			switch (KeyChar) {
 			case 'w':
 				move_w(true);
@@ -359,14 +425,18 @@ public class GamePanel extends JPanel implements KeyListener, MouseListener, Mou
 		addKeyListener(this);
 		this.requestFocus();
 		new Timer().schedule(new MyTimerTask(), 1000);
+		ifDiy=true;
 		initialize("DiyCarPosition");
 	}
 
 	public void callRecord(JFrame jFrameP) {
-		Mydialog mydialog = new Mydialog(jFrameP);
+		Mydialog mydialog = new Mydialog(jFrameP,"record",currentGameOperations);
 		mydialog.show();
 	}
-
+	public void callOperation(JFrame jFrameP){
+		Mydialog mydialog = new Mydialog(jFrameP,"operation",currentGameOperations);
+		mydialog.show();
+	}
 	public void skip() {
 		System.out.println("press skip");
 		gotoNextGame();
@@ -377,6 +447,7 @@ public class GamePanel extends JPanel implements KeyListener, MouseListener, Mou
 		addKeyListener(this);
 		this.requestFocus();
 		new Timer().schedule(new MyTimerTask(), 1000);
+		ifDiy=false;
 		initialize("CarPosition");
 	}
 
@@ -411,7 +482,6 @@ public class GamePanel extends JPanel implements KeyListener, MouseListener, Mou
 		// TODO Auto-generated method stub
 		totalSteps = 0;
 		System.out.println("press reset");
-		System.out.println("initial list1:");
 		printCarList(initialCars);
 		// ArrayList<Car> tempCarList=new ArrayList<Car>();
 		// tempCarList=allGames.get(currentGame).
@@ -419,9 +489,7 @@ public class GamePanel extends JPanel implements KeyListener, MouseListener, Mou
 		for (int i = 0; i < 36; i++) {
 			isFree[i] = true;
 		}
-		System.out.println("initial list2:");
 		printCarList(initialCars);
-		System.out.println("the list:");
 		printCarList(allGames.get(currentGame).getCarList());
 		currentOperation = 0;
 		currentGameOperations.clear();
@@ -687,13 +755,18 @@ public class GamePanel extends JPanel implements KeyListener, MouseListener, Mou
 
 			if (currentCar == 1 && blocks[1] == 17) {// success
 				System.out.println("success!!!!!!!!!");
-				/***         **/
+				callOperation(myFrame);
 				watch.end();
 				System.out.println("getTime" + watch.getTime());
-				long thisRecord = watch.getTime();
-				if (record.get(currentGame + "").compareTo(thisRecord) > 0) {
-					record.replace(currentGame + "", record.get(currentGame + ""), thisRecord);
-					/*************** 这里要将记录的txt清空 把新的record写进去 ***************/
+				if(ifDiy==false){
+					System.out.println("21");
+					System.out.println(record.get(currentGame + ""));
+					System.out.println(totalSteps);
+					if (record.get(currentGame + "").compareTo(totalSteps) > 0) {
+						record.replace(currentGame + "", record.get(currentGame + ""), totalSteps);
+						/*************** 这里要将记录的txt清空 把新的record写进去 ***************/
+						new FileReader().toFile("src/record.txt", record);
+					}
 				}
 				this.removeMouseListener(this);
 				this.removeMouseMotionListener(this);
@@ -786,7 +859,6 @@ public class GamePanel extends JPanel implements KeyListener, MouseListener, Mou
 	//
 	public int freeNeighbours(int hostBlock,char direction){
 		int num=0;
-		System.out.println("check hostblock "+hostBlock);
 		if(direction=='w'){
 			num=0;
 			while(hostBlock/6>0&&isFree[hostBlock-6]){
@@ -796,11 +868,8 @@ public class GamePanel extends JPanel implements KeyListener, MouseListener, Mou
 		}
 		else if(direction=='a'){
 			num=0;
-			System.out.println("permssion "+((hostBlock-1)%6));
 			while(hostBlock%6>0&&isFree[hostBlock-1]){
 				num++;
-				System.out.println("hostblock:"+hostBlock);
-				System.out.println("neighbour num:"+num);
 				hostBlock-=1;
 			}		
 		}
@@ -899,7 +968,6 @@ public class GamePanel extends JPanel implements KeyListener, MouseListener, Mou
 			// x_part,y_part 均为正值，正负看xminus,yminus
 			if (allGames.get(currentGame).getCarList().get(currentCar - 1).isVertical()) {// 可竖直移动
 				int move_block = (y_part + m / 2) / m;
-				System.out.println("shuzhi move " + y_part);
 				if (!yminus) {// move down
 					for (int i = 0; i < move_block; i++) {
 						move_s(true);
@@ -913,8 +981,6 @@ public class GamePanel extends JPanel implements KeyListener, MouseListener, Mou
 				}
 			} else {// 可水平移动
 				int move_block = (x_part + m / 2) / m;
-				System.out.println("shuiping move " + x_part);
-				System.out.println("shuiping move " + move_block);
 				if (!xminus) {// move right
 					for (int i = 0; i < move_block; i++) {
 						move_d(true);
@@ -936,5 +1002,84 @@ public class GamePanel extends JPanel implements KeyListener, MouseListener, Mou
 
 	public void mouseExited(MouseEvent e) {
 	}
-
+/*                   自动                   */
+//	private ArrayList<Operation> getMayBeOperation(){
+	void getMayBeOperation(){
+		ArrayList<Operation> mayBeOperations=new ArrayList<Operation>();
+		for(int i=1;i<=6;i++){
+			currentCar=i;
+			CarStruct carStruct=new CarStruct(allGames.get(currentGame).getCarList().get(currentCar-1));
+			switch (carStruct.carCode) {
+			case 1:
+				if(carStruct.block%6!=0){
+				if(isFree[carStruct.block-1]){
+					Operation operation=new Operation();
+					operation.setSelectCar(currentCar);
+					operation.setPressMove('a');
+					mayBeOperations.add(operation);
+				}}
+				if(carStruct.block%6<=2){
+				if(isFree[carStruct.block+3]){
+					Operation operation=new Operation();
+					operation.setSelectCar(currentCar);
+					operation.setPressMove('d');
+					mayBeOperations.add(operation);
+				}}
+				break;
+			case 2:	
+				if(carStruct.block>=6){
+				if(isFree[carStruct.block-6]){
+					Operation operation=new Operation();
+					operation.setSelectCar(currentCar);
+					operation.setPressMove('w');
+					mayBeOperations.add(operation);
+				}}
+				if(carStruct.block<=17){
+				if(isFree[carStruct.block+18]){
+					Operation operation=new Operation();
+					operation.setSelectCar(currentCar);
+					operation.setPressMove('s');
+					mayBeOperations.add(operation);
+				}	}
+				break;
+			case 3:
+				if(carStruct.block%6!=0){
+				if(isFree[carStruct.block-1]){
+					Operation operation=new Operation();
+					operation.setSelectCar(currentCar);
+					operation.setPressMove('a');
+					mayBeOperations.add(operation);
+				}}
+				if(carStruct.block%6<=3){
+				if(isFree[carStruct.block+2]){
+					Operation operation=new Operation();
+					operation.setSelectCar(currentCar);
+					operation.setPressMove('d');
+					mayBeOperations.add(operation);
+				}	}
+				break;
+			case 4:
+				if(carStruct.block>=6){
+				if(isFree[carStruct.block-6]){
+					Operation operation=new Operation();
+					operation.setSelectCar(currentCar);
+					operation.setPressMove('w');
+					mayBeOperations.add(operation);
+				}}
+				if(carStruct.block<=23){
+				if(isFree[carStruct.block+12]){
+					Operation operation=new Operation();
+					operation.setSelectCar(currentCar);
+					operation.setPressMove('s');
+					mayBeOperations.add(operation);
+				}}	
+				break;
+			default:
+				break;
+			}
+		}
+		for(int i=0;i<mayBeOperations.size();i++){
+			System.out.println(mayBeOperations.get(i).getSelectCar()+"  "+mayBeOperations.get(i).getPressMove());
+		}
+	}
 }

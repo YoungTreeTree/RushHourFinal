@@ -25,6 +25,7 @@ public class MyFrame extends JFrame implements ActionListener{
 	private JMenuItem jMenuItem_skip=new JMenuItem("skip");
 	private JMenuItem jMenuItem_undo=new JMenuItem("undo");
 	private JMenuItem jMenuItem_reset=new JMenuItem("reset");
+	private JMenuItem jMenuItem_auto=new JMenuItem("auto");
 	private LoginPanel loginPanel=new LoginPanel();
 	public MyFrame(){
 		super();
@@ -41,6 +42,7 @@ public class MyFrame extends JFrame implements ActionListener{
 		jMenuItem_reset.addActionListener(this);
 		jMenuItem_diy_game.addActionListener(this);
 		jMenuItem_start_diy_game.addActionListener(this);
+		jMenuItem_auto.addActionListener(this);
 		/********************jMenu添加jMenuItem*****************/
 		JMenu_start.add(JMenu_normal);
 		JMenu_start.add(JMenu_diy);
@@ -51,6 +53,7 @@ public class MyFrame extends JFrame implements ActionListener{
 		JMenu_operation.add(jMenuItem_skip);
 		JMenu_operation.add(jMenuItem_reset);
 		JMenu_operation.add(jMenuItem_undo);
+		JMenu_operation.add(jMenuItem_auto);
 		/********************jMenuBar添加jMenu*****************/
 		jMenuBar.add(JMenu_start);
 		jMenuBar.add(JMenu_operation);
@@ -103,6 +106,9 @@ public class MyFrame extends JFrame implements ActionListener{
 			this.makeOperationOn();
 			this.loginPanel.changeToGamePanel();
 			this.loginPanel.gamePanel.startDiyGame();
+		}
+		if(src==jMenuItem_auto){
+			this.loginPanel.gamePanel.getMayBeOperation();
 		}
 	}
 }
